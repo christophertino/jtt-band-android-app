@@ -1,0 +1,3 @@
+<resources>
+    <color name="default_text">@android:color/black</color>
+</resources>
