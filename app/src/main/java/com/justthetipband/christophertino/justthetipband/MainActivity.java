@@ -81,15 +81,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         @Override
         public Fragment getItem(int index) {
             Log.v(TAG, "index is " + index);
-            Fragment returnFrag = null;
             //Based on the position, we call a particular fragment
             switch (index) {
                 case 0:
-                    returnFrag = WebsiteBlogPostsFragment.newInstance(index);
-                    break;
+                    return WebsiteBlogPostsFragment.newInstance(index);
+                case 1:
+                    return ScheduleFragment.newInstance(index);
+                default:
+                    return WebsiteBlogPostsFragment.newInstance(index);
             }
-            //TODO: for now just show the only fragment we have
-            return WebsiteBlogPostsFragment.newInstance(index);
+            //return null;
         }
     }
 

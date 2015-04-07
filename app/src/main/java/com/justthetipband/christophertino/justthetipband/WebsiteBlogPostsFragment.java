@@ -29,7 +29,7 @@ import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
 
 /**
  * Website Blog Posts Fragment
- * Retrive blog content from http://www.justthetipband.com/blog
+ * Retrieve blog content from http://www.justthetipband.com/blog
  *
  * @author christophertino
  * @since  Apr 2015
@@ -65,7 +65,7 @@ public class WebsiteBlogPostsFragment extends ListFragment {
         //set progress bar
         pb = (ProgressBar) view.findViewById(R.id.progress_bar);
 
-        //set the title of each fragment
+        //set the title of each fragment TODO: change this
         TextView fragmentTitle = (TextView) view.findViewById(R.id.fragment_title);
         String titleOutput;
         switch (currentIndex) {
@@ -91,7 +91,6 @@ public class WebsiteBlogPostsFragment extends ListFragment {
     @Override //this gets called when the parent Activity onCreate() finishes
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, cheeses));
         RequestParams params = new RequestParams();
         params.put("posts_per_page", "10");
         try {
