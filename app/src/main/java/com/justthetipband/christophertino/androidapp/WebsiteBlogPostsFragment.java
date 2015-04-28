@@ -1,5 +1,6 @@
-package com.justthetipband.christophertino.justthetipband;
+package com.justthetipband.christophertino.androidapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -37,20 +37,11 @@ import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
 public class WebsiteBlogPostsFragment extends ListFragment {
     private static final String TAG = "WebsiteBlogPostsFragment";
     private ListView listView;
-    private int currentIndex;
-    private ProgressBar pb;
+    private ProgressDialog pd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //set current index based on args MainActivity
-        if (getArguments() != null) {
-            currentIndex = getArguments().getInt("fragmentIndex");
-        } else {
-            currentIndex = 1;
-        }
-
     }
 
     @Override //use onCreateView to inflate our layout fragment so that we can access views within
@@ -62,29 +53,9 @@ public class WebsiteBlogPostsFragment extends ListFragment {
         //set our listview element here because we need access to the view parameter
         listView = (ListView) view.findViewById(android.R.id.list);
 
-        //set progress bar
-        pb = (ProgressBar) view.findViewById(R.id.progress_bar);
-
-        //set the title of each fragment TODO: change this
+        //set the title of fragment
         TextView fragmentTitle = (TextView) view.findViewById(R.id.fragment_title);
-        String titleOutput;
-        switch (currentIndex) {
-            case 0 :
-                titleOutput = "Latest Blogs";
-                break;
-            case 1 :
-                titleOutput = "Upcoming Shows";
-                break;
-            case 2 :
-                titleOutput = "Latest Videos";
-                break;
-            case 3 :
-                titleOutput = "Latest Tweets";
-                break;
-            default:
-                titleOutput = "Just the Tip";
-        }
-        fragmentTitle.setText(titleOutput);
+        fragmentTitle.setText("Latest Blog Posts");
         return view;
     }
 
@@ -97,7 +68,6 @@ public class WebsiteBlogPostsFragment extends ListFragment {
             getJSONContent(params);
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.v(TAG, "HTTP GET request failed.");
         }
 
     }
@@ -122,9 +92,8 @@ public class WebsiteBlogPostsFragment extends ListFragment {
     private void getJSONContent(RequestParams params) throws JSONException {
         HTTPClient.get("posts", params, new JsonHttpResponseHandler() {
             @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-                int progressPercentage = 100 * bytesWritten/totalSize;
-                pb.setProgress(progressPercentage);
+            public void onStart() {
+                pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading blog posts...", true);
             }
 
             @Override
@@ -146,12 +115,14 @@ public class WebsiteBlogPostsFragment extends ListFragment {
                     }
                 }
 
-                //hide progress bar
-                pb.setVisibility(View.GONE);
-
                 //Build ArrayAdapter and refresh view
                 WebsiteArrayAdapter itemsAdapter = new WebsiteArrayAdapter(getActivity().getApplicationContext(), postsList);
                 listView.setAdapter(itemsAdapter);
+            }
+
+            @Override
+            public void onFinish() {
+                pd.dismiss();
             }
         });
     }
@@ -178,7 +149,7 @@ public class WebsiteBlogPostsFragment extends ListFragment {
      * WebsiteArrayAdapter
      * Custom ArrayAdapter used to populate the fragment
      * @param   JSONObject from getJSONContent()
-     * @return  rendered content in fragment_list_item
+     * @return  rendered content in blog_fragment_list_item
      */
     private static class WebsiteArrayAdapter extends ArrayAdapter<JSONObject> {
         // View lookup cache
@@ -203,7 +174,7 @@ public class WebsiteBlogPostsFragment extends ListFragment {
             // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_list_item, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.blog_fragment_list_item, parent, false);
                 viewHolder.postTitle = (TextView) convertView.findViewById(R.id.postTitle);
                 viewHolder.postContent = (TextView) convertView.findViewById(R.id.postContent);
                 convertView.setTag(viewHolder);

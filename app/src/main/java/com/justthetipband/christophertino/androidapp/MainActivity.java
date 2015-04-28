@@ -1,4 +1,4 @@
-package com.justthetipband.christophertino.justthetipband;
+package com.justthetipband.christophertino.androidapp;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,10 +6,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.util.Log;
 
 /**
  * Main Activity
@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     /*
      * Build the Fragment Pager Adapter
      * This is called onCreate() and each time the fragment changes
-     * Some methods overriden from PagerAdapter parent class
+     * Some methods override from PagerAdapter parent class
      */
     public static class CustomFragmentAdapter extends FragmentPagerAdapter {
         public CustomFragmentAdapter(FragmentManager fm) {
@@ -87,6 +87,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                     return WebsiteBlogPostsFragment.newInstance(index);
                 case 1:
                     return ScheduleFragment.newInstance(index);
+	            case 3:
+		            return TwitterFragment.newInstance(index);
                 default:
                     return WebsiteBlogPostsFragment.newInstance(index);
             }

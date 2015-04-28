@@ -1,4 +1,4 @@
-package com.justthetipband.christophertino.justthetipband;
+package com.justthetipband.christophertino.androidapp;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
