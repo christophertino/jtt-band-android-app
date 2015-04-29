@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -19,7 +18,6 @@ import android.widget.Button;
 public class MainActivity extends FragmentActivity implements OnClickListener {
     private static final String TAG = "MainActivity";
     private static final int NUM_FRAGMENTS = 4; //how many fragments are we making?
-    private CustomFragmentAdapter mAdapter;
     private ViewPager mPager;
 
     @Override
@@ -27,7 +25,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mAdapter = new CustomFragmentAdapter(getSupportFragmentManager());
+	    CustomFragmentAdapter mAdapter = new CustomFragmentAdapter(getSupportFragmentManager());
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -65,7 +63,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
     /*
      * Build the Fragment Pager Adapter
-     * This is called onCreate() and each time the fragment changes
+     * This is called from onCreate() and each time the fragment changes
      * Some methods override from PagerAdapter parent class
      */
     public static class CustomFragmentAdapter extends FragmentPagerAdapter {
@@ -80,20 +78,26 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
         @Override
         public Fragment getItem(int index) {
-            Log.v(TAG, "index is " + index);
-            //Based on the position, we call a particular fragment
+	        //Based on the position, we call a particular fragment
+	        Fragment returnFrag;
             switch (index) {
                 case 0:
-                    return WebsiteBlogPostsFragment.newInstance(index);
+	                returnFrag = WebsiteBlogPostsFragment.newInstance(index);
+                    break;
                 case 1:
-                    return ScheduleFragment.newInstance(index);
+                    returnFrag = ScheduleFragment.newInstance(index);
+	                break;
 	            case 2:
-		            return YouTubeFragment.newInstance(index);
+		            returnFrag = YouTubeFragment.newInstance(index);
+		            break;
 	            case 3:
-		            return TwitterFragment.newInstance(index);
-                default:
-                    return WebsiteBlogPostsFragment.newInstance(index);
+		            returnFrag = TwitterFragment.newInstance(index);
+                    break;
+	            default:
+		            returnFrag = WebsiteBlogPostsFragment.newInstance(index);
+		            break;
             }
+	        return returnFrag;
         }
     }
 

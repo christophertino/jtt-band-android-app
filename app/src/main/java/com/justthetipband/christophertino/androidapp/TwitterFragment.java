@@ -73,7 +73,7 @@ public class TwitterFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Log.i("FragmentList", "Item clicked: " + id);
+		Log.i(TAG, "Item clicked: " + id);
 	}
 
 	//return the TwitterFragment to the MainActivity
@@ -126,7 +126,7 @@ public class TwitterFragment extends ListFragment {
 
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-				ArrayList<String> tweets = new ArrayList();
+				ArrayList<String> tweets = new ArrayList<>();
 				for (int i = 0; i < timeline.length(); i++) {
 					JSONObject row;
 					try {

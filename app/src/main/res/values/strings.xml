@@ -6,4 +6,5 @@
     <string name="button_videos">Videos</string>
     <string name="button_twitter">Twitter</string>
     <string name="fragment_list_no_items">No Items Found</string>
+	<string name="video_player_label">Video Player</string>
 </resources>

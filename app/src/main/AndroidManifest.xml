@@ -13,5 +13,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+		<activity android:name=".YouTubeVideoActivity"
+		          android:label="@string/video_player_label"
+		          android:launchMode="singleTop" />
 	</application>
 </manifest>

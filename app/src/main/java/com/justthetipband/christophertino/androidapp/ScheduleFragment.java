@@ -64,7 +64,7 @@ public class ScheduleFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.i("FragmentList", "Item clicked: " + id);
+		Log.i(TAG, "Item clicked: " + id);
     }
 
     //return the ScheduleFragment to the MainActivity
@@ -82,7 +82,7 @@ public class ScheduleFragment extends ListFragment {
     private void getRSSContent() {
         AsyncHttpClient client = new AsyncHttpClient();
         final DataHandler handlerInstance = new DataHandler();
-        client.get("http://www.justthetipband.com/?feed=gigpress", new SaxAsyncHttpResponseHandler(handlerInstance) {
+        client.get("http://www.justthetipband.com/?feed=gigpress", new SaxAsyncHttpResponseHandler<DefaultHandler>(handlerInstance) {
             private ArrayList<String> rssItems = new ArrayList<>();
 
 	        @Override

@@ -35,7 +35,7 @@ import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
  * @since  Apr 2015
  */
 public class WebsiteBlogPostsFragment extends ListFragment {
-    private static final String TAG = "WebsiteBlogPostsFragment";
+    private static final String TAG = "WebsiteFragment";
     private ListView listView;
     private ProgressDialog pd;
 
@@ -67,14 +67,13 @@ public class WebsiteBlogPostsFragment extends ListFragment {
         try {
             getJSONContent(params);
         } catch (JSONException e) {
-            e.printStackTrace();
+	        e.printStackTrace();
         }
-
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.i("FragmentList", "Item clicked: " + id);
+		Log.i(TAG, "Item clicked: " + id);
     }
 
     //return the WebsiteBlogPostsFragment to the MainActivity
@@ -195,7 +194,4 @@ public class WebsiteBlogPostsFragment extends ListFragment {
             return convertView;
         }
     }
-
-
-
 }
