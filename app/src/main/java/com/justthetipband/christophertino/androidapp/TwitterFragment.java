@@ -36,7 +36,7 @@ import static com.justthetipband.christophertino.androidapp.TwitterConstants.TWI
  * @since April 2015
  */
 public class TwitterFragment extends ListFragment {
-	private static final String TAG = "WebsiteBlogPostsFragment";
+	private static final String TAG = "TwitterFragment";
 	private ListView listView;
 	private ProgressDialog pd;
 

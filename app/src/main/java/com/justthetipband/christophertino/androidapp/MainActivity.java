@@ -87,12 +87,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                     return WebsiteBlogPostsFragment.newInstance(index);
                 case 1:
                     return ScheduleFragment.newInstance(index);
+	            case 2:
+		            return YouTubeFragment.newInstance(index);
 	            case 3:
 		            return TwitterFragment.newInstance(index);
                 default:
                     return WebsiteBlogPostsFragment.newInstance(index);
             }
-            //return null;
         }
     }
 
