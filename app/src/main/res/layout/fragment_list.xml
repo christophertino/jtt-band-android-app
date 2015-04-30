@@ -8,28 +8,38 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center_vertical|center_horizontal"
-		android:text=""/>
+		android:text=""
+		android:textSize="@dimen/header_text"
+		android:background="@android:color/white"
+		android:paddingBottom="10dp"
+		android:paddingTop="10dp"/>
 
 	<!-- Use frame layout since we will be showing either
 	the empty view or the list view.  -->
 	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="1">
+		android:layout_weight="1"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:paddingTop="10dp">
 		<!-- ListActivity requires an element with id "@android:id/list" -->
 		<ListView
 			android:id="@android:id/list"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:dividerHeight="1px"
-			android:drawSelectorOnTop="false" />
+			android:divider="@android:color/transparent"
+			android:dividerHeight="10.0dp"
+			android:drawSelectorOnTop="false"/>
 
 		<!-- Show if the list is emtpy -->
 		<TextView
 			android:id="@android:id/empty"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:text="@string/fragment_list_no_items"/>
+			android:text="@string/fragment_list_no_items"
+			android:textSize="@dimen/large_text"
+			android:gravity="center_vertical|center_horizontal"/>
 
 	</FrameLayout>
 

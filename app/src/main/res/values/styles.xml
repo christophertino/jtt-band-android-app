@@ -1,13 +1,31 @@
 <resources>
 	<!-- Base application theme. -->
-	<style name="JTT.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="BandTheme" parent="Theme.AppCompat.Light.DarkActionBar">
 		<!-- Customize your theme here. -->
-        <item name="android:textColor">@color/default_text</item>
+        <item name="android:textColor">@android:color/black</item>
+		<item name="android:textSize">@dimen/default_text</item>
 	</style>
 
     <style name="TabBarButtons" parent="@android:style/Widget.Holo.Light.Button.Borderless.Small">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">@dimen/button_text</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
+	<style name="FragmentListItemLayout">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:background">@android:color/white</item>
+		<item name="android:paddingLeft">10dp</item>
+		<item name="android:paddingRight">10dp</item>
+		<item name="android:paddingTop">10dp</item>
+		<item name="android:paddingBottom">10dp</item>
+	</style>
+
+	<style name="PostTitle">
+		<item name="android:textColor">@color/jtt_blue</item>
+		<item name="android:textSize">@dimen/medium_text</item>
+		<item name="android:textStyle">bold</item>
+	</style>
 </resources>

@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              style="@style/FragmentListItemLayout">
 
-	<TextView
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:id="@+id/videoTitle"
-		android:textColor="@color/default_text"/>
+		android:orientation="horizontal">
 
-	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/videoThumbnail"/>
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/videoThumbnail"/>
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="0.5"
+			android:id="@+id/videoTitle"
+			android:layout_marginLeft="10dp"
+			style="@style/PostTitle"/>
+
+	</LinearLayout>
 
 </LinearLayout>

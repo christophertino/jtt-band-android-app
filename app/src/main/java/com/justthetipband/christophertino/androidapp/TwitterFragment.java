@@ -37,24 +37,25 @@ import static com.justthetipband.christophertino.androidapp.TwitterConstants.TWI
  */
 public class TwitterFragment extends ListFragment {
 	private static final String TAG = "TwitterFragment";
-	private ListView listView;
+	ArrayList<String> tweets;
+	TwitterArrayAdapter itemsAdapter;
 	private ProgressDialog pd;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		tweets = new ArrayList<>();
+		itemsAdapter = new TwitterArrayAdapter(getActivity().getApplicationContext(), tweets);
 	}
 
-	@Override //use onCreateView to inflate our layout fragment so that we can access views within
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-		//We inflate the fragment with a single ListView element, because ListFragment must find a ListView with @android:id/list
-		//Below in onActivityCreated -> SimpleCursorAdapter we bind to R.layout.list_item
 		View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-		//set our listview element here because we need access to the view parameter
-		listView = (ListView) view.findViewById(android.R.id.list);
+		ListView listView = (ListView) view.findViewById(android.R.id.list);
+		listView.setAdapter(itemsAdapter);
 
-		//set the title of the fragment
 		TextView fragmentTitle = (TextView) view.findViewById(R.id.fragment_title);
 		fragmentTitle.setText("Twitter Feed");
 
@@ -64,16 +65,20 @@ public class TwitterFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+
 		try {
-			beginOAUTH();
-		} catch (JSONException e) {
+			if (tweets.isEmpty()) {
+				try {
+					beginOAUTH();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} else {
+				itemsAdapter.notifyDataSetChanged();
+			}
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		Log.i(TAG, "Item clicked: " + id);
 	}
 
 	//return the TwitterFragment to the MainActivity
@@ -121,14 +126,13 @@ public class TwitterFragment extends ListFragment {
 		client.get(url, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
-				pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading tweets...", true);
+				pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading...", true);
 			}
 
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-				ArrayList<String> tweets = new ArrayList<>();
+				JSONObject row;
 				for (int i = 0; i < timeline.length(); i++) {
-					JSONObject row;
 					try {
 						row = timeline.getJSONObject(i);
 						tweets.add(row.getString("text"));
@@ -136,10 +140,7 @@ public class TwitterFragment extends ListFragment {
 						e.printStackTrace();
 					}
 				}
-
-				//Build ArrayAdapter and refresh view
-				TwitterArrayAdapter itemsAdapter = new TwitterArrayAdapter(getActivity().getApplicationContext(), tweets);
-				listView.setAdapter(itemsAdapter);
+				itemsAdapter.notifyDataSetChanged();
 			}
 
 			@Override

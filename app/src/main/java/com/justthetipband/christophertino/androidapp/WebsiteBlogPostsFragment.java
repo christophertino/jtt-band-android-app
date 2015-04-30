@@ -32,166 +32,183 @@ import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
  * Retrieve blog content from http://www.justthetipband.com/blog
  *
  * @author christophertino
- * @since  Apr 2015
+ * @since Apr 2015
  */
 public class WebsiteBlogPostsFragment extends ListFragment {
-    private static final String TAG = "WebsiteFragment";
-    private ListView listView;
-    private ProgressDialog pd;
+	private static final String TAG = "WebsiteFragment";
+	ArrayList<JSONObject> postsList;
+	WebsiteArrayAdapter itemsAdapter;
+	private ProgressDialog pd;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-    @Override //use onCreateView to inflate our layout fragment so that we can access views within
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        //We inflate the fragment with a single ListView element, because ListFragment must find a ListView with @android:id/list
-        //Below in onActivityCreated -> SimpleCursorAdapter we bind to R.layout.list_item
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+		//initialize our array of website posts
+		postsList = new ArrayList<>();
 
-        //set our listview element here because we need access to the view parameter
-        listView = (ListView) view.findViewById(android.R.id.list);
+		//Build array adapter
+		itemsAdapter = new WebsiteArrayAdapter(getActivity().getApplicationContext(), postsList);
+	}
 
-        //set the title of fragment
-        TextView fragmentTitle = (TextView) view.findViewById(R.id.fragment_title);
-        fragmentTitle.setText("Latest Blog Posts");
-        return view;
-    }
+	@Override //use onCreateView to inflate our layout fragment so that we can access views within
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		//We inflate the fragment with a single ListView element, because ListFragment must find a ListView with @android:id/list
+		//Below in onActivityCreated -> SimpleCursorAdapter we bind to R.layout.list_item
+		View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-    @Override //this gets called when the parent Activity onCreate() finishes
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        RequestParams params = new RequestParams();
-        params.put("posts_per_page", "10");
-        try {
-            getJSONContent(params);
-        } catch (JSONException e) {
-	        e.printStackTrace();
-        }
-    }
+		//set our listview element here because we need access to the view parameter
+		ListView listView = (ListView) view.findViewById(android.R.id.list);
+		listView.setAdapter(itemsAdapter);
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+		//set the title of fragment
+		TextView fragmentTitle = (TextView) view.findViewById(R.id.fragment_title);
+		fragmentTitle.setText("Latest Blog Posts");
+		return view;
+	}
+
+	@Override //this gets called when the parent Activity onCreate() finishes
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		try {
+			//First time through, query the website for posts
+			if (postsList.isEmpty()) {
+				RequestParams params = new RequestParams();
+				params.put("posts_per_page", "10");
+				try {
+					getJSONContent(params);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} else {
+				//If we already have the postList, restore from there
+				itemsAdapter.notifyDataSetChanged();
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
 		Log.i(TAG, "Item clicked: " + id);
-    }
+	}
 
-    //return the WebsiteBlogPostsFragment to the MainActivity
-    public static WebsiteBlogPostsFragment newInstance(int fragmentIndex) {
-        WebsiteBlogPostsFragment fragment = new WebsiteBlogPostsFragment();
+	//return the WebsiteBlogPostsFragment to the MainActivity
+	public static WebsiteBlogPostsFragment newInstance(int fragmentIndex) {
+		WebsiteBlogPostsFragment fragment = new WebsiteBlogPostsFragment();
 
-        //Pass fragment index as argument
-        Bundle args = new Bundle();
-        args.putInt("fragmentIndex", fragmentIndex);
-        fragment.setArguments(args);
+		//Pass fragment index as argument
+		Bundle args = new Bundle();
+		args.putInt("fragmentIndex", fragmentIndex);
+		fragment.setArguments(args);
 
-        return fragment;
-    }
+		return fragment;
+	}
 
-    private void getJSONContent(RequestParams params) throws JSONException {
-        HTTPClient.get("posts", params, new JsonHttpResponseHandler() {
-            @Override
-            public void onStart() {
-                pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading blog posts...", true);
-            }
+	private void getJSONContent(RequestParams params) throws JSONException {
+		HTTPClient.get("posts", params, new JsonHttpResponseHandler() {
+			@Override
+			public void onStart() {
+				pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading...", true);
+			}
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                JSONObject row = null;
-                ArrayList<JSONObject> postsList = new ArrayList<>();
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+				JSONObject row = null;
 
-                for (int i = 0; i < response.length(); i++) {
-                    //get each row as JSON object
-                    try {
-                        row = response.getJSONObject(i);
-                    } catch (JSONException e) {
-                        e.printStackTrace(System.out);
-                    }
+				for (int i = 0; i < response.length(); i++) {
+					//get each row as JSON object
+					try {
+						row = response.getJSONObject(i);
+					} catch (JSONException e) {
+						e.printStackTrace(System.out);
+					}
 
-                    //add JSON to arrayList
-                    if (row != null) {
-                        postsList.add(row);
-                    }
-                }
+					//add JSON to arrayList
+					if (row != null) {
+						postsList.add(row);
+					}
+				}
 
-                //Build ArrayAdapter and refresh view
-                WebsiteArrayAdapter itemsAdapter = new WebsiteArrayAdapter(getActivity().getApplicationContext(), postsList);
-                listView.setAdapter(itemsAdapter);
-            }
+				//Update the adapter
+				itemsAdapter.notifyDataSetChanged();
+			}
 
-            @Override
-            public void onFinish() {
-                pd.dismiss();
-            }
-        });
-    }
+			@Override
+			public void onFinish() {
+				pd.dismiss();
+			}
+		});
+	}
 
-    /*
-     * HTTPClient
-     * Factory Class for AsyncHttpClient
-     */
-    private static class HTTPClient {
-        private static final String BASE_URL = "http://www.justthetipband.com/wp-json/";
+	/*
+	 * HTTPClient
+	 * Factory Class for AsyncHttpClient
+	 */
+	private static class HTTPClient {
+		private static final String BASE_URL = "http://www.justthetipband.com/wp-json/";
 
-        private static AsyncHttpClient client = new AsyncHttpClient();
+		private static AsyncHttpClient client = new AsyncHttpClient();
 
-        public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-            client.get(getAbsoluteUrl(url), params, responseHandler);
-        }
+		public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+			client.get(getAbsoluteUrl(url), params, responseHandler);
+		}
 
-        private static String getAbsoluteUrl(String relativeUrl) {
-            return BASE_URL + relativeUrl;
-        }
-    }
+		private static String getAbsoluteUrl(String relativeUrl) {
+			return BASE_URL + relativeUrl;
+		}
+	}
 
-    /*
-     * WebsiteArrayAdapter
-     * Custom ArrayAdapter used to populate the fragment
-     * @param   JSONObject from getJSONContent()
-     * @return  rendered content in blog_fragment_list_item
-     */
-    private static class WebsiteArrayAdapter extends ArrayAdapter<JSONObject> {
-        // View lookup cache
-        private static class ViewHolder {
-            TextView postTitle;
-            TextView postContent;
-        }
+	/*
+	 * WebsiteArrayAdapter
+	 * Custom ArrayAdapter used to populate the fragment
+	 * @param   JSONObject from getJSONContent()
+	 * @return  rendered content in blog_fragment_list_item
+	 */
+	private static class WebsiteArrayAdapter extends ArrayAdapter<JSONObject> {
+		// View lookup cache
+		private static class ViewHolder {
+			TextView postTitle;
+			TextView postContent;
+		}
 
-        public WebsiteArrayAdapter(Context context, ArrayList<JSONObject> row) {
-            super(context, 0, row);
-        }
+		public WebsiteArrayAdapter(Context context, ArrayList<JSONObject> row) {
+			super(context, 0, row);
+		}
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Get the data item for this position
-            JSONObject row = getItem(position);
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// Get the data item for this position
+			JSONObject row = getItem(position);
 
-            // Using ViewHolder pattern to cache findViewById() recurrences
-            // https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern
-            ViewHolder viewHolder;
+			// Using ViewHolder pattern to cache findViewById() recurrences
+			// https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView#improving-performance-with-the-viewholder-pattern
+			ViewHolder viewHolder;
 
-            // Check if an existing view is being reused, otherwise inflate the view
-            if (convertView == null) {
-                viewHolder = new ViewHolder();
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.blog_fragment_list_item, parent, false);
-                viewHolder.postTitle = (TextView) convertView.findViewById(R.id.postTitle);
-                viewHolder.postContent = (TextView) convertView.findViewById(R.id.postContent);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
+			// Check if an existing view is being reused, otherwise inflate the view
+			if (convertView == null) {
+				viewHolder = new ViewHolder();
+				convertView = LayoutInflater.from(getContext()).inflate(R.layout.blog_fragment_list_item, parent, false);
+				viewHolder.postTitle = (TextView) convertView.findViewById(R.id.postTitle);
+				viewHolder.postContent = (TextView) convertView.findViewById(R.id.postContent);
+				convertView.setTag(viewHolder);
+			} else {
+				viewHolder = (ViewHolder) convertView.getTag();
+			}
 
-            // Populate the data into the template view using the data object
-            try {
-                String excerpt = Html.fromHtml(row.getString("excerpt")).toString(); //strip out html tags
-                viewHolder.postTitle.setText(unescapeHtml4(row.getString("title")));//convert html chars to string
-                viewHolder.postContent.setText(unescapeHtml4(excerpt)); //convert html chars to string
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+			// Populate the data into the template view using the data object
+			try {
+				String excerpt = Html.fromHtml(row.getString("excerpt")).toString(); //strip out html tags
+				viewHolder.postTitle.setText(unescapeHtml4(row.getString("title")));//convert html chars to string
+				viewHolder.postContent.setText(excerpt.replace("\n", "")); //remove excess line breaks
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 
-            // Return the completed view to render on screen
-            return convertView;
-        }
-    }
+			// Return the completed view to render on screen
+			return convertView;
+		}
+	}
 }

@@ -65,6 +65,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
      * Build the Fragment Pager Adapter
      * This is called from onCreate() and each time the fragment changes
      * Some methods override from PagerAdapter parent class
+     * NOTE: On first load, FragmentPagerAdapter calls getItem(0) and getItem(1) by default
      */
     public static class CustomFragmentAdapter extends FragmentPagerAdapter {
         public CustomFragmentAdapter(FragmentManager fm) {
@@ -79,7 +80,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         @Override
         public Fragment getItem(int index) {
 	        //Based on the position, we call a particular fragment
-	        Fragment returnFrag;
+	        Fragment returnFrag = null;
             switch (index) {
                 case 0:
 	                returnFrag = WebsiteBlogPostsFragment.newInstance(index);
@@ -93,9 +94,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	            case 3:
 		            returnFrag = TwitterFragment.newInstance(index);
                     break;
-	            default:
-		            returnFrag = WebsiteBlogPostsFragment.newInstance(index);
-		            break;
             }
 	        return returnFrag;
         }

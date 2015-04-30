@@ -1,3 +1,4 @@
 <resources>
-    <color name="default_text">@android:color/black</color>
+	<color name="jtt_blue">#FF005791</color>
+	<color name="light_grey">#FFCCCCCC</color>
 </resources>

@@ -35,6 +35,7 @@ Visit https://console.developers.google.com/ and create a new project.
 + Loopj HTTP Client (https://github.com/loopj/android-async-http)
 + Apache Commons Lang (http://commons.apache.org/proper/commons-lang/)
 + jsoup: Java HTML Parser (http://jsoup.org/)
++ YouTube Android Player API (https://developers.google.com/youtube/android/player/)
 
 ## License
 

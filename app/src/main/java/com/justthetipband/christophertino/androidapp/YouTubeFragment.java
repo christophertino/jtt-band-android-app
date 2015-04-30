@@ -40,25 +40,25 @@ import static com.justthetipband.christophertino.androidapp.YouTubeConstants.PLA
  */
 public class YouTubeFragment extends ListFragment {
 	private static final String TAG = "YouTubeFragment";
-	private ListView listView;
+	private ArrayList<Video> videoList;
+	private VideoArrayAdapter itemsAdapter;
 	private ProgressDialog pd;
-	private ArrayList<Video> videoList = new ArrayList<>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		videoList = new ArrayList<>();
+		itemsAdapter = new VideoArrayAdapter(getActivity().getApplicationContext(), videoList);
 	}
 
-	@Override //use onCreateView to inflate our layout fragment so that we can access views within
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-		//We inflate the fragment with a single ListView element, because ListFragment must find a ListView with @android:id/list
-		//Below in onActivityCreated -> SimpleCursorAdapter we bind to R.layout.list_item
 		View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-		//set our listview element here because we need access to the view parameter
-		listView = (ListView) view.findViewById(android.R.id.list);
+		ListView listView = (ListView) view.findViewById(android.R.id.list);
+		listView.setAdapter(itemsAdapter);
 
-		//set the title of the fragment
 		TextView fragmentTitle = (TextView) view.findViewById(R.id.fragment_title);
 		fragmentTitle.setText("Latest Videos");
 
@@ -68,9 +68,18 @@ public class YouTubeFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+
 		try {
-			getYouTubeVideos();
-		} catch (JSONException e) {
+			if (videoList.isEmpty()) {
+				try {
+					getYouTubeVideos();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} else {
+				itemsAdapter.notifyDataSetChanged();
+			}
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 	}
@@ -115,7 +124,7 @@ public class YouTubeFragment extends ListFragment {
 		client.get(url, new JsonHttpResponseHandler() {
 			@Override
 			public void onStart() {
-				pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading videos...", true);
+				pd = ProgressDialog.show(getActivity(), "Please Wait", "Downloading...", true);
 			}
 
 			@Override
@@ -127,7 +136,7 @@ public class YouTubeFragment extends ListFragment {
 						for (int i = 0; i < items.length(); i++) {
 							JSONObject objectData = items.getJSONObject(i);
 							String title = objectData.getJSONObject("snippet").getString("title");
-							String thumbUrl = objectData.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("default").getString("url");
+							String thumbUrl = objectData.getJSONObject("snippet").getJSONObject("thumbnails").getJSONObject("medium").getString("url");
 							String videoId = objectData.getJSONObject("snippet").getJSONObject("resourceId").getString("videoId");
 							videoList.add(new Video(title, thumbUrl, videoId));
 						}
@@ -138,9 +147,7 @@ public class YouTubeFragment extends ListFragment {
 					e.printStackTrace();
 				}
 
-				//Build ArrayAdapter and refresh view
-				VideoArrayAdapter itemsAdapter = new VideoArrayAdapter(getActivity().getApplicationContext(), videoList);
-				listView.setAdapter(itemsAdapter);
+				itemsAdapter.notifyDataSetChanged();
 			}
 
 			@Override
