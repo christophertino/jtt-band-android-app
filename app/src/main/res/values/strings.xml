@@ -1,10 +1,8 @@
 <resources>
 	<string name="app_name">Just the Tip Band</string>
     <string name="home_label">Just the Tip</string>
-    <string name="button_blog">Blog</string>
-    <string name="button_schedule">Schedule</string>
-    <string name="button_videos">Videos</string>
-    <string name="button_twitter">Twitter</string>
     <string name="fragment_list_no_items">No Items Found</string>
 	<string name="video_player_label">Video Player</string>
+	<string name="drawer_open">Drawer Open</string>
+	<string name="drawer_close">Drawer Close</string>
 </resources>

@@ -4,13 +4,8 @@
 		<!-- Customize your theme here. -->
         <item name="android:textColor">@android:color/black</item>
 		<item name="android:textSize">@dimen/default_text</item>
+		<item name="android:activatedBackgroundIndicator">@drawable/list_activated_background</item>
 	</style>
-
-    <style name="TabBarButtons" parent="@android:style/Widget.Holo.Light.Button.Borderless.Small">
-        <item name="android:textSize">@dimen/button_text</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
 
 	<style name="FragmentListItemLayout">
 		<item name="android:orientation">vertical</item>

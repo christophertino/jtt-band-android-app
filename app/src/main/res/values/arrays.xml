@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<array name="drawer_titles">
+		<item>Blog</item>
+		<item>Schedule</item>
+		<item>Videos</item>
+		<item>Twitter</item>
+	</array>
+	<array name="drawer_icons">
+		<item>ic_action_web_site</item>
+		<item>ic_action_go_to_today</item>
+		<item>ic_action_video</item>
+		<item>ic_action_twitter</item>
+	</array>
+</resources>

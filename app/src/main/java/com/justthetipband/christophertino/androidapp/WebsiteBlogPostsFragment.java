@@ -93,6 +93,7 @@ public class WebsiteBlogPostsFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Log.i(TAG, "Item clicked: " + id);
+		//TODO: Implement new activity that retrieves from /wp-json/posts/{id}
 	}
 
 	//return the WebsiteBlogPostsFragment to the MainActivity

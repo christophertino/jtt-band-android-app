@@ -4,5 +4,4 @@
 	<dimen name="large_text">18sp</dimen>
 	<dimen name="medium_text">16sp</dimen>
 	<dimen name="default_text">14sp</dimen>
-	<dimen name="button_text">10sp</dimen>
 </resources>
